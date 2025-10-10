@@ -1,0 +1,2 @@
+#!/bin/sh
+docker exec laradock-workspace-1 sh -c "cd laravel-prj && npm run lint"
