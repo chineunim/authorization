@@ -29,7 +29,7 @@
             error.value = '';
             router.visit('/')
         } catch (e: any) {
-            e.value = e.response?.data?.message || 'login failed';
+            error.value = e.response?.data?.message || 'login failed';
         }
     }
 </script>
@@ -42,6 +42,10 @@
             <input v-model="password" type="password" placeholder="password" required />
             <button type="submit">Login</button>
         </form>
+
+        <div v-if="error" style="color: red; margin-top: 10px;">
+            {{ error }}
+        </div>
 
     </div>
 </template>
