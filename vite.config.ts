@@ -23,6 +23,7 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
+        tailwindcss(),
     ],
     resolve: {
         alias: {
