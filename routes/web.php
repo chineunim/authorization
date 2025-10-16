@@ -17,11 +17,10 @@ Route::get('/index', function () {
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout.post');
 
-//
-//Route::get('/login', function () {
-//    return Inertia::render('LoginPage');
-//})->name('login');
+Route::get('/login', function () {
+    return Inertia::render('LoginPage');
+})->name('login');
 
 Route::get('/test', function () {
-   return Inertia::render('Test');
+    return Inertia::render('Test');
 })->name('test');
