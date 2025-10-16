@@ -10,9 +10,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
     })->name('dashboard');
 });
 
+Route::get('/index', function () {
+    return Inertia::render('Index');
+})->name('index');
+
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout.post');
+
 Route::get('/login', function () {
     return Inertia::render('LoginPage');
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/test', function () {
+    return Inertia::render('Test');
+})->name('test');

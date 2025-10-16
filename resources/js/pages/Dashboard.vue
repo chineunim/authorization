@@ -1,33 +1,27 @@
 <script setup lang="ts">
+import Header from '@/components/Header.vue';
+import Navbar from '@/components/Navbar.vue';
+import Content from '@/components/Content.vue';
+import Footer from '@/components/Footer.vue';
+import { ref } from 'vue';
 
-    import axios from 'axios';
-    import { router } from '@inertiajs/vue3';
-
-    async function logout() {
-        try {
-            await axios.post('/logout');
-            router.visit('/login');
-        } catch (error) {
-            console.error('Error during logout', error);
-        }
-    }
-
+const selectedItem = ref('Users');
 </script>
 
 <template>
-    <h1>This is dashboard page</h1>
-    <button class="btn" @click="logout">Logout</button>
+    <div class="size-full flex bg-gray-200">
+        <Navbar :selectedItem="selectedItem" @selected-item="selectedItem = $event" />
+        <div class="size-full ml-40 flex flex-col">
+            <Header />
+            <Content :selected-item="selectedItem" />
+            <Footer />
+        </div>
+    </div>
 </template>
 
-<style scoped>
-    .btn {
-        margin: 10px;
-        padding: 5px;
-
-        border: solid 1px #3e3e3a;
-        border-radius: 4px;
-
-        font-size: 14px;
-        color: #3e3e3a;
+<style>
+    html, body, #app {
+        margin: 0;
+        height: 100%;
     }
 </style>
