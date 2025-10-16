@@ -1,4 +1,4 @@
-<script setup lang="ts">
+    <script setup lang="ts">
 import NavbarItem from '@/components/UI/NavbarItem.vue';
 
 const props = defineProps<{
@@ -8,6 +8,10 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'selectedItem', item: string): void;
 }>();
+
+const handleItemClick = (item: string) => {
+    emit('selectedItem', item);
+};
 </script>
 
 <template>
@@ -20,17 +24,17 @@ const emit = defineEmits<{
         <NavbarItem
             itemName="Users"
             :selectedItem="props.selectedItem"
-            @click="emit('selectedItem', 'Users')"
+            @click="handleItemClick('Users')"
         />
         <NavbarItem
             itemName="Item2"
             :selectedItem="props.selectedItem"
-            @click="emit('selectedItem', 'Item2')"
+            @click="handleItemClick('Item2')"
         />
         <NavbarItem
             itemName="Item3"
             :selectedItem="props.selectedItem"
-            @click="emit('selectedItem', 'Item3')"
+            @click="handleItemClick('Item3')"
         />
     </div>
 </template>

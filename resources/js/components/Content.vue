@@ -2,7 +2,7 @@
 import UsersList from '@/components/UsersList.vue';
 
 const props = defineProps<{
-  selectedItem: String
+  selectedItem: string
 }>();
 </script>
 

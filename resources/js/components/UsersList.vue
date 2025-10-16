@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
 import UserInfoModal from '@/components/Modal/UserInfoModal.vue';
 import UserEditModal from '@/components/Modal/UserEditModal.vue';
+import UserCreateModal from '@/components/Modal/UserCreateModal.vue';
+import { deleteUserUrl,usersIndexUrl } from '@/components/constants';
+
 interface User {
     id: number,
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     email: string,
     phone: string,
 }
@@ -13,13 +17,22 @@ interface User {
 const selectedUser = ref<User | null>(null);
 const isInfoModalActive = ref(false);
 const isEditModalActive = ref(false);
+const isCreateModalActive = ref(false);
+const users = ref<User[]>([]);
+const error = ref('');
 
-const users = ref<User[]>([
-    { id: 1, firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com', phone: '+1 555-1234' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com', phone: '+1 555-5678' },
-    { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob.johnson@example.com', phone: '+1 555-8765' },
-    { id: 4, firstName: 'Alice', lastName: 'Williams', email: 'alice.williams@example.com', phone: '+1 555-4321' },
-]);
+onMounted(async () => {
+    try {
+        const response = await axios.get(usersIndexUrl);
+
+        users.value = response.data;
+
+        console.log(response.data);
+    } catch (err) {
+        console.error('Error fetching data: ', err);
+        error.value = 'Failed to load data';
+    }
+})
 
 function openInfoModal (user: User) {
     selectedUser.value = user;
@@ -31,16 +44,39 @@ function openEditModal (user: User) {
     isEditModalActive.value = true;
 }
 
+function openCreateModal () {
+    isCreateModalActive.value = true;
+}
+
+function addUser (newUser: User) {
+    users.value.push(newUser);
+    isCreateModalActive.value = false;
+}
+
 function updateUser (updatedUser: User) {
     const index = users.value.findIndex(u => u.id === updatedUser.id)
     users.value[index] = { ...updatedUser  };
 }
 
-function deleteUser (user: User) {
-    const index = users.value.findIndex(u => u.id === user.id)
-    users.value.splice(index, 1);
-}
+async function deleteUser (user: User) {
+    const confirmed = confirm(`Are you sure you want to delete ${user.first_name} ${user.last_name}?`);
+    if (!confirmed) {
+        return;
+    }
 
+    try {
+        await axios.delete(deleteUserUrl(user.id))
+
+        const index = users.value.findIndex(u => u.id === user.id);
+
+        users.value.splice(index, 1);
+
+        console.log('delete successful');
+    } catch (error) {
+        console.error(error);
+
+    }
+}
 </script>
 
 <template>
@@ -52,7 +88,6 @@ function deleteUser (user: User) {
                      <th class="px-4 py-2 text-gray-300">First Name</th>
                      <th class="px-4 py-2 text-gray-300">Last Name</th>
                      <th class="px-4 py-2 text-gray-300">Email</th>
-                     <th class="px-4 py-2 text-gray-300">Phone</th>
                      <th class="py-2 text-gray-300">Functions</th>
                 </tr>
             </thead>
@@ -62,16 +97,13 @@ function deleteUser (user: User) {
                         {{ user.id }}
                     </td>
                     <td class="px-4 py-2 border-x border-gray-200">
-                        {{ user.firstName }}
+                        {{ user.first_name }}
                     </td>
                     <td class="px-4 py-2 border-x border-gray-200">
-                        {{ user.lastName }}
+                        {{ user.last_name }}
                     </td>
                     <td class="px-4 py-2 border-x border-gray-200">
                         {{ user.email }}
-                    </td>
-                    <td class="px-4 py-2 border-x border-gray-200">
-                        {{ user.phone }}
                     </td>
                     <td class="py-2 flex items-center justify-center gap-2">
                         <button class="h-5 w-5 cursor-pointer"
@@ -92,6 +124,9 @@ function deleteUser (user: User) {
                 </tr>
             </tbody>
         </table>
+        <button class="px-5 py-2 bg-gray-900 text-gray-300" @click="openCreateModal()">
+            Create new user
+        </button>
         <UserInfoModal
             :isActive="isInfoModalActive"
             :user="selectedUser"
@@ -102,6 +137,11 @@ function deleteUser (user: User) {
             :user="selectedUser"
             @update:isActive="isEditModalActive = $event"
             @updateUser="updateUser"
+        />
+        <UserCreateModal
+            :isActive="isCreateModalActive"
+            @update:isActive="isCreateModalActive = $event"
+            @addUser="addUser"
         />
     </div>
 </template>

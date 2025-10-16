@@ -10,8 +10,7 @@ const selectedItem = ref('Users');
 
 <template>
     <div class="size-full flex bg-gray-200">
-        <Navbar @selected-item="selectedItem = $event"
-                :selectedItem="selectedItem" />
+        <Navbar :selectedItem="selectedItem" @selected-item="selectedItem = $event" />
         <div class="size-full ml-40 flex flex-col">
             <Header />
             <Content :selected-item="selectedItem" />

@@ -3,8 +3,8 @@ const props = defineProps({
     user: {
         type: Object as () => {
             id: number,
-            firstName: string,
-            lastName: string,
+            first_name: string,
+            last_name: string,
             email: string,
             phone: string,
         } | null,
@@ -33,11 +33,11 @@ function close () {
             </label>
             <label>
                 <span class="text-gray-500 text-sm">First name: </span>
-                <span>{{ props.user.firstName }}</span>
+                <span>{{ props.user.first_name }}</span>
             </label>
             <label>
                 <span class="text-gray-500 text-sm">Last name: </span>
-                <span>{{ props.user.lastName }}</span>
+                <span>{{ props.user.last_name }}</span>
             </label>
             <label>
                 <span class="text-gray-500 text-sm">Email: </span>
@@ -48,8 +48,10 @@ function close () {
                 <span>{{ props.user.phone }}</span>
             </label>
             <div class="h-full flex">
-                <button @click="close"
-                        class=" ml-auto mt-auto py-2 px-4 bg-gray-900 text-gray-300">Close</button>
+                <button class=" ml-auto mt-auto py-2 px-4 bg-gray-900 text-gray-300"
+                        @click="close">
+                    Close
+                </button>
             </div>
         </div>
     </div>

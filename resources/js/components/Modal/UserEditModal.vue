@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { updateUserUrl } from '@/components/constants';
+import axios from 'axios';
 
 const props = defineProps({
     user: {
         type: Object as () => {
             id: number,
-            firstName: string,
-            lastName: string,
+            first_name: string,
+            last_name: string,
             email: string,
             phone: string,
         } | null,
@@ -25,7 +27,7 @@ watch(
     () => props.user,
     (newUser) => {
         if (newUser) {
-            editedUser.value = { ...newUser }
+            editedUser.value = {... newUser }
         }
     },
     { immediate: true }
@@ -35,7 +37,19 @@ function close () {
     emit('update:isActive', false)
 }
 
-function save() {
+async function save() {
+    try {
+        const url = updateUserUrl(editedUser.value.id);
+
+        const response = await axios.put(url, editedUser.value);
+
+        emit('updateUser', response.data);
+
+        close();
+    } catch (error) {
+        console.error(error);
+    }
+
     emit('updateUser', editedUser.value);
     close();
 }
@@ -48,12 +62,12 @@ function save() {
         <div class="w-90 h-110 p-5 flex flex-col gap-4 bg-gray-100 rounded-lg">
             <label>
                 <span class="text-gray-500 text-sm">First name: </span>
-                <input v-model="editedUser.firstName"
+                <input v-model="editedUser.first_name"
                        class="w-full px-2 py-1 border border-gray-300 rounded" />
             </label>
             <label>
                 <span class="text-gray-500 text-sm">Last name: </span>
-                <input v-model="editedUser.lastName"
+                <input v-model="editedUser.last_name"
                        class="w-full px-2 py-1 border border-gray-300 rounded" />
             </label>
             <label>
@@ -67,13 +81,13 @@ function save() {
                        class="w-full px-2 py-1 border border-gray-300 rounded" />
             </label>
             <div class="mt-auto flex justify-center gap-10">
-                <button @click="close"
-                        class="w-20 py-2 bg-gray-900 text-gray-300">
+                <button class="w-20 py-2 bg-gray-900 text-gray-300"
+                        @click="close">
                     Close
                 </button>
 
-                <button @click="save"
-                        class="w-20 py-2 bg-gray-900 text-gray-300">
+                <button class="w-20 py-2 bg-gray-900 text-gray-300"
+                        @click="save">
                     Save
                 </button>
             </div>
